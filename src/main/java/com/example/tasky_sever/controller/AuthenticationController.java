@@ -3,18 +3,19 @@ package com.example.tasky_sever.controller;
 import com.example.tasky_sever.model.auth.AuthenticationResponse;
 import com.example.tasky_sever.model.auth.User;
 import com.example.tasky_sever.service.AuthenticationService;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 @RestController
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     public AuthenticationController(AuthenticationService authenticationService) {
@@ -53,6 +54,24 @@ public class AuthenticationController {
 
         // Spring will automatically serialize this object to JSON
         return token;
+    }
+
+    @GetMapping("/user-info") // Add your endpoint path
+    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7); // Extract the token (after "Bearer ")
+
+            // Now you can use the token to get the user
+            Optional<User> user = authenticationService.getUser(token);
+
+            if (user.isPresent()) {
+                return ResponseEntity.ok(user.get()); // Return the user object if found
+            } else {
+                return ResponseEntity.status(404).body("User not found"); // Return 404 if the user is not found
+            }
+        } else {
+            return ResponseEntity.badRequest().body("Invalid Authorization header"); // Return bad request if header is invalid
+        }
     }
 
 }

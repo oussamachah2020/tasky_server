@@ -3,15 +3,13 @@ package com.example.tasky_sever.service;
 import com.example.tasky_sever.model.auth.AuthenticationResponse;
 import com.example.tasky_sever.model.auth.User;
 import com.example.tasky_sever.repository.UserRepository;
-import org.apache.commons.logging.Log;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
@@ -79,5 +77,15 @@ public class AuthenticationService {
         User user = repository.findByUsername(username).orElseThrow();
 
         return jwtService.generateAccessToken(user);
+    }
+
+    public Optional<User> getUser(String token) {
+        if (!token.isEmpty()) {
+
+            String username = jwtService.extractUsername(token);
+            return repository.findByUsername(username);
+        } else {
+            return Optional.empty();
+        }
     }
 }
