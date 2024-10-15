@@ -1,6 +1,6 @@
 package com.example.tasky_sever.repository;
 
-import com.example.tasky_sever.model.User;
+import com.example.tasky_sever.model.auth.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

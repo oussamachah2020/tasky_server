@@ -1,5 +1,6 @@
-package com.example.tasky_sever.model;
+package com.example.tasky_sever.model.auth;
 
+import com.example.tasky_sever.model.tasks.Tasks;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +19,7 @@ public class User implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Change here
     @Column(name = "id")
     Integer id;
 
@@ -36,6 +37,17 @@ public class User implements UserDetails, Serializable {
 
     @Enumerated(value = EnumType.STRING)
     Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Tasks> tasks;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

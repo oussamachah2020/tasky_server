@@ -29,9 +29,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(req->req.requestMatchers("/login/**", "/register/**").permitAll().anyRequest().authenticated()).userDetailsService(userServiceImp).sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers("/login/**", "/register/**", "/refresh/**").permitAll() // Allow public access
+                        .anyRequest().authenticated() // All other requests require authentication
+                )
+                .userDetailsService(userServiceImp)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -1,4 +1,4 @@
-package com.example.tasky_sever.model;
+package com.example.tasky_sever.model.auth;
 
 public class DemoUser {
     public void demo() {
