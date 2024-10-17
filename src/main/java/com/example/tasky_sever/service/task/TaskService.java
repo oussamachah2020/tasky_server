@@ -1,11 +1,11 @@
 package com.example.tasky_sever.service.task;
 
-import com.example.tasky_sever.model.auth.User;
 import com.example.tasky_sever.model.tasks.Task;
+import com.example.tasky_sever.model.tasks.TaskDto;
 import com.example.tasky_sever.repository.TaskRepository;
 import com.example.tasky_sever.repository.UserRepository;
-import com.example.tasky_sever.service.auth.UserDto;
 import org.apache.coyote.BadRequestException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +15,13 @@ import java.util.Optional;
 public class TaskService {
     private final TaskRepository repository;
     private final UserRepository userRepository;
+
+    public static class TaskNotFoundException extends RuntimeException {
+        public TaskNotFoundException(String message) {
+            super(message);
+        }
+    }
+
 
     public TaskService(TaskRepository repository, UserRepository userRepository1) {
         this.repository = repository;
@@ -36,6 +43,7 @@ public class TaskService {
         task.setDue_at(req.getDue_at());
         task.setPriority(req.getPriority());
         task.setStatus(req.getStatus());
+        task.setTag(req.getTag());
         task.setUserId(req.getUserId());
 
         return repository.save(task);
@@ -56,6 +64,39 @@ public class TaskService {
         }
 
         return repository.findById(taskId);
+    }
+
+    public void updateTask(TaskDto req, Integer taskId) {
+        if (req == null || taskId == null) {
+            throw new IllegalArgumentException("Task data and taskId cannot be null");
+        }
+
+        // Fetch the task from the repository by its ID
+        Task existingTask = repository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + taskId));
+
+        // Update the fields with the new values
+        existingTask.setTitle(req.getTitle());
+        existingTask.setStart_at(req.getStart_at());
+        existingTask.setDue_at(req.getDue_at());
+        existingTask.setPriority(req.getPriority());
+        existingTask.setStatus(req.getStatus());
+        existingTask.setTag(req.getTag());
+
+        repository.save(existingTask);
+    }
+
+    public void removeTask(Integer taskId) {
+        if (taskId == null) {
+            throw new IllegalArgumentException("Task id is required");
+        }
+
+        // Fetch the task, and throw TaskNotFoundException if it doesn't exist
+        Task existingTask = repository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
+
+        // Proceed with deletion if the task exists
+        repository.deleteById(taskId);
     }
 
 
