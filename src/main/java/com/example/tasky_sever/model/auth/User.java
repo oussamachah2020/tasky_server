@@ -1,6 +1,6 @@
 package com.example.tasky_sever.model.auth;
 
-import com.example.tasky_sever.model.tasks.Tasks;
+import com.example.tasky_sever.model.tasks.Task;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,7 +39,7 @@ public class User implements UserDetails, Serializable {
     Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Tasks> tasks;
+    private List<Task> tasks;
 
     public Integer getId() {
         return id;

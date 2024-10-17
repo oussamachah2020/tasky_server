@@ -1,4 +1,4 @@
-package com.example.tasky_sever.service;
+package com.example.tasky_sever.service.auth;
 
 import com.example.tasky_sever.model.auth.AuthenticationResponse;
 import com.example.tasky_sever.model.auth.User;
@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -17,7 +16,6 @@ public class AuthenticationService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final UserDetailsImplementation userDetailsService;
 
     private final static Logger LOGGER =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -31,7 +29,6 @@ public class AuthenticationService {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
     }
 
@@ -79,11 +76,10 @@ public class AuthenticationService {
         return jwtService.generateAccessToken(user);
     }
 
-    public Optional<User> getUser(String token) {
+    public Optional<UserDto> getUser(String token) {
         if (!token.isEmpty()) {
-
             String username = jwtService.extractUsername(token);
-            return repository.findByUsername(username);
+            return repository.findByUsername(username).map((user -> new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getRole())));
         } else {
             return Optional.empty();
         }

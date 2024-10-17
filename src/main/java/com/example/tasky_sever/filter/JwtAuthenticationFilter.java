@@ -1,7 +1,7 @@
 package com.example.tasky_sever.filter;
 
-import com.example.tasky_sever.service.JwtService;
-import com.example.tasky_sever.service.UserDetailsImplementation;
+import com.example.tasky_sever.service.auth.JwtService;
+import com.example.tasky_sever.service.auth.UserDetailsImplementation;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

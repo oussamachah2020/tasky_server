@@ -1,4 +1,4 @@
-package com.example.tasky_sever.service;
+package com.example.tasky_sever.service.auth;
 import com.example.tasky_sever.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,7 +1,7 @@
 package com.example.tasky_sever.config;
 
 import com.example.tasky_sever.filter.JwtAuthenticationFilter;
-import com.example.tasky_sever.service.UserDetailsImplementation;
+import com.example.tasky_sever.service.auth.UserDetailsImplementation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
